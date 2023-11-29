@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Counter</title>
+    <style>
+        body {
+            margin: 0px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            width: auto;
+            flex-direction: column;
+            background-color: #2b3b4d;
+        }
+
+        .digit {
+            font-size: 50px;
+            color: #d7dfe4;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        @media screen and (max-width:500px) {
+            .digit {
+                font-size: 32px;
+            }
+        }
+
+        .text {
+            font-size: 35px;
+            color: #d7dfe4;
+            font-weight: bold;
+
+        }
+
+        @media screen and (max-width:500px) {
+            .text {
+                font-size: 20px;
+            }
+        }
+
+        .btn {
+            /* font-weight: bold; */
+            color: #d7dfe4;
+            padding: 8px 25px;
+            margin: 20px 20px;
+            font-size: 15px;
+            border: 0px;
+            border-radius: 2px;
+            cursor: pointer;
+        }
+
+
+        #moving-ani {
+
+            background-image: linear-gradient(-45deg, rgb(157, 37, 226), rgb(155, 9, 60), rgb(28, 186, 207), rgb(255, 4, 4));
+            background-size: 350% 350%;
+
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            animation: ani 5s ease-in-out infinite;
+            animation-direction: alternate;
+            box-sizing: border-box;
+            /* justify-content: center; */
+            /* padding: ; */
+            display: flex;
+            /* justify-content: center; */
+            align-items: center;
+            flex-direction: row;
+            padding-right: 20px;
+            padding-left: 20px;
+        }
+
+
+        @keyframes ani {
+
+            0% {
+
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 50% 100%;
+            }
+
+            100% {
+                background-position: 50% 0%;
+            }
+
+
+        }
+
+        .container {
+            /* background-color: aquamarine; */
+            text-align: center;
+            overflow: hidden;
+            /* border: 1px solid black; */
+            width: 60vw;
+            height: auto;
+        }
+
+        h1 {
+            background-color: tomato;
+            padding: 10px;
+            margin: 0px;
+        }
+
+        #textarea {
+            width: 99.4%;
+            border: 1px solid black;
+            font-size: 15px;
+            text-align: center;
+        }
+
+        p {
+            background-color: tomato;
+
+            font-size: 40px;
+        }
+
+        @media screen and (max-width:555px) {
+            .char {
+                font-size: 25px;
+            }
+        }
+
+        .score {
+            font-size: 25px;
+        }
+    </style>
+</head>
+
+
+
+
+<body>
+    <div id="moving-ani">
+
+        <div
+            style="height: 90vh; width: 40vw; background-color: rgba(255, 255, 255, 0.209);margin-right: 20px;border-radius: 4px;position:relative">
+
+            <div id="textsection"
+                style="height: 85%;width: 96%; text-align:justify; color:white; font-size: 21px ; letter-spacing: 1px; border-radius: 4px; margin-left: 10px; margin-right: 10px;margin-top: 10px; background:none; overflow: hidden;">
+                hey my name is ravindra verma and for now i am practicing JavaScript . this is little project like
+                typing master.
+                right now it's not quite good and responsive because i am working on multiple projects right now so i
+                don't have enought time to fix this but in few days i will complete this project .
+
+                <br>
+                <br>
+
+                click on Regenerate button to fetch new paragraps for tryping test;
+            </div>
+
+            <!-- <hr color="white"> -->
+            <br>
+            <button id="regenbtn"
+                style="text-align: center; margin-left: 10px; margin-right: 10px; width: 96%; cursor: pointer; height: 40px; font-size: 16px; letter-spacing: 1px; background: none;color: white; border: 1px solid white; border-radius: 4px;">
+                Regenerate Text</button>
+
+
+        </div>
+
+
+        <div style="text-align: center;">
+            <div class="time">
+
+                <span class="digit" id="hr">00</span>
+                <span class="text ">Hr</span>
+
+                <span class="digit" id="min">00</span>
+                <span class="text">Min</span>
+
+                <span class="digit" id="sec">00</span>
+                <span class="text">Sec</span>
+
+                <span class="digit" id="milisec">00</span>
+                <span class="text">Milisec</span>
+            </div>
+
+            <div class="buttons">
+                <button class="btn" id="start" onclick="start()"
+                    style="background-color: rgba(60, 197, 119, 0.693);display: none;">Start</button>
+
+                <button class="btn" id="stop" onclick="stop()"
+                    style="background-color: rgba(30, 129, 187, 0.741);">Stop</button>
+
+                <button class="btn" id="reset" onclick="reset()"
+                    style="background-color: rgba(255, 99, 71, 0.723);">Reset</button>
+            </div>
+
+
+
+            <div class="container">
+                <h1 class="char"> WORD & CHARACTER COUNTER </h1>
+
+                <textarea id="textarea" cols="30" rows="10" placeholder="type here " onkeyup="start()"></textarea>
+                <p class="char"> <span id="word"> 0 </span> words and <span id="char"> 0 </span> character </p>
+                <!-- <p class="score" id="scoore"> </p> -->
+            </div>
+
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+    <script>
+
+        let textarea = document.getElementById("textarea");
+
+        textarea.addEventListener('input', function () {
+            let len = this.value;
+            let w = len.length;
+
+            document.getElementById("char").innerHTML = w;
+
+
+            len = len.trim();
+            let wordcount = len.split(" ");
+            wordcount = wordcount.filter(function (elm) {
+
+                return elm != "";
+
+            });
+
+            document.getElementById("word").innerHTML = wordcount.length;
+        })
+
+
+
+
+
+        var hr = 0;
+        var min = 0;
+        var sec = 0;
+        var milisec = 0;
+
+        var timer = false;
+
+        function start() {
+            var dd = document.getElementById("textarea").value.length;
+            if (dd == 1) {
+
+                timer = true;
+
+                stopwatch();
+            }
+
+            if (dd == 0) {
+            reset();
+        }
+        }
+
+
+
+
+
+        function stop() {
+            timer = false;
+        }
+
+        function reset() {
+            timer = false;
+            hr = 0;
+            min = 0;
+            sec = 0;
+            milisec = 0;
+            document.getElementById("hr").innerHTML = "00";
+            document.getElementById("min").innerHTML = "00";
+            document.getElementById("sec").innerHTML = "00";
+            document.getElementById("milisec").innerHTML = "00";
+        }
+
+        function stopwatch() {
+
+
+            if (min == 60) {
+                hr = hr + 1;
+                if (hr < 10) {
+                    let hrstring = hr;
+                    hrstring = "0" + hrstring;
+                    document.getElementById("hr").innerHTML = hrstring;
+                }
+                else {
+                    document.getElementById("hr").innerHTML = hr;
+                }
+                min = 0;
+                milisec = 0;
+                sec = 0;
+            }
+
+            if (sec == 60) {
+                min = min + 1;
+                if (min < 10) {
+                    let minstring = min;
+                    minstring = "0" + minstring
+                    document.getElementById("min").innerHTML = minstring;
+                }
+                else {
+                    document.getElementById("min").innerHTML = min;
+                }
+                milisec = 0;
+                sec = 0;
+            }
+
+            if (milisec == 100) {
+                sec = sec + 1;
+                if (sec < 10) {
+                    let secstring = sec;
+                    secstring = "0" + secstring;
+                    document.getElementById("sec").innerHTML = secstring;
+                }
+                else {
+                    document.getElementById("sec").innerHTML = sec;
+                }
+                milisec = 0;
+            }
+
+            if (timer == true) {
+                milisec = milisec + 1;
+                document.getElementById("milisec").innerHTML = milisec;
+                setTimeout("stopwatch()", 10);
+
+
+            }
+
+
+
+        }
+
+
+
+
+
+
+        let regenbtn = document.getElementById("regenbtn");
+
+        let textsection = document.getElementById("textsection");
+
+        let paras = [
+            "Business casual is an ambiguously defined dress code that has been adopted by many professional and white-collar workplaces in Western countries. It entails neat yet casual attire and is generally more casual than informal attire but more formal than casual or smart casual attire. Casual Fridays preceded widespread acceptance of business casual attire in many offices.",
+
+            "Trying to make a wise, good choice when thinking about what kinds of careers might be best for you is a hard thing to do. Your future may very well depend on the ways you go about finding the best job openings for you in the world of work. Some people will feel that there is one and only one job in the world for them. Hard thinking and a lot of hard work will help them find the one job that is best for them. Jobs are there for those with skills and a good work ethic.Trying to make a wise, good choice when thinking about what kinds of careers might be best for you is a hard thing to do. Your future may very well depend on the ways you go about finding the best job openings for you in the world of work. Some people will feel that there is one and only one job in the world for them. Hard thinking and a lot of hard work will help them find the one job that is best for them.",
+
+            "Words per minute (WPM) is a measure of typing speed, commonly used in recruitment. For the purposes of WPM measurement a word is standardized to five characters or keystrokes.",
+
+            "As I sit in my room late at night, staring at the computer screen, I decide it would be a good idea to create this text. There isn't much meaning to it, other than to get some simple practice. A lot of the texts that have been created are rather short, and don't give a good representation of actual typing speed and accuracy.",
+
+            "The boxed moved. That was a problem. Peter had packed the box three hours before and there was nothing inside that should make it move. The question now was whether or not Peter was going to open it up and look inside to see why it had moved. The answer to that question was obvious. Peter dropped the package into the mailbox so he would never have to see it again",
+
+            "In web development, the CSS box model refers to how HTML elements are modeled in browser engines and how the dimensions of those HTML elements are derived from CSS properties. It is a fundamental concept for the composition of HTML webpages.",
+
+            "JavaScript, often abbreviated as JS, is a programming language that is one of the core technologies of the World Wide Web, alongside HTML and CSS. As of 2022, 98% of websites use JavaScript on the client side for webpage behavior, often incorporating third-party libraries",
+
+            "Cascading Style Sheets is a style sheet language used for describing the presentation of a document written in a markup language such as HTML or XML. CSS is a cornerstone technology of the World Wide Web, alongside HTML and JavaScript.",
+
+            "यहां रीडायरेक्ट करें। अन्य उपयोगों के लिए, एचटीएम देखें। विकिपीडिया पर एचटीएमएल के उपयोग के लिए, विकिपाठ में सहायता:एचटीएमएल देखें। हाइपरटेक्स्ट मार्कअप भाषा या HTML वेब ब्राउज़र में प्रदर्शित होने के लिए डिज़ाइन किए गए दस्तावेज़ों के लिए मानक मार्कअप भाषा है।",
+
+            "PHP is a general-purpose scripting language geared toward web development. It was originally created by Danish-Canadian programmer Rasmus Lerdorf in 1993 and released in 1995. The PHP reference implementation is now produced by The PHP Group.",
+
+            "C is a general-purpose computer programming language. It was created in the 1970s by Dennis Ritchie, and remains very widely used and influential. By design, C's features cleanly reflect the capabilities of the targeted CPUs.",
+
+            "The “SQL” part of “MySQL” stands for “Structured Query Language.” SQL is the most common standardized language used to access databases."
+        ];
+
+        regenbtn.addEventListener('click', function () {
+            let randpara = paras[Math.floor(Math.random() * paras.length)];
+            textsection.innerText = randpara;
+        })
+
+
+       
+    
+    </script>
+
+</body>
+
+</html>
